@@ -20,7 +20,7 @@ const row = (bill) => {
 }
 
 const rows = (data) => {
-	//Fix bug: test => Tri des Bills
+	//Fix bug: [Bug report] - Bills test => Tri des Bills
 	return data && data.length
 		? data
 				.sort((a, b) => {

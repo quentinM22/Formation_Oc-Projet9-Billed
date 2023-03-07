@@ -1,5 +1,6 @@
 import VerticalLayout from "./VerticalLayout.js"
-
+// Fix bug: # [Bug Hunt] - Bills
+// Ligne 58 ajout ( accept="image/png", "image/jpeg", "image/jpg")
 export default () => {
 	return `
     <div class='layout'>

@@ -50,10 +50,10 @@ export default class Login {
 		e.preventDefault()
 		const user = {
 			type: "Admin",
-			// Fix bug: login Admin => " employee-email-input" > "admin-email-input"
+			// Fix bug: [Bug report] - Login => " employee-email-input" > "admin-email-input"
 			email: e.target.querySelector(`input[data-testid="admin-email-input"]`)
 				.value,
-			// Fix bug: login Admin => " employee-password-input" > "admin-password-input"
+			// Fix bug: [Bug report] - Login => " employee-password-input" > "admin-password-input"
 			password: e.target.querySelector(
 				`input[data-testid="admin-password-input"]`
 			).value,

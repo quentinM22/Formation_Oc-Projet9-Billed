@@ -14,7 +14,7 @@ export const filteredBills = (data, status) => {
 				if (typeof jest !== "undefined") {
 					selectCondition = bill.status === status
 				} else {
-				/* istanbul ignore next */
+					/* istanbul ignore next */
 					// in prod environment
 					const userEmail = JSON.parse(localStorage.getItem("user")).email
 					selectCondition =
@@ -155,7 +155,7 @@ export default class {
 		}
 
 		bills.forEach((bill) => {
-			// Fix bug: Evenement Select Bills => Jquery .off().on() gestion évenement
+			// Fix bug: [Bug Hunt] - Dashboard Evenement Select Bills => Jquery .off().on() gestion évenement
 			// $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
 			$(`#open-bill${bill.id}`)
 				.off("click")
