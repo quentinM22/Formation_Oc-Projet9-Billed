@@ -2,8 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fireEvent, screen, waitFor } from "@testing-library/dom"
-import userEvent from "@testing-library/user-event"
+import { findByTestId, fireEvent, screen } from "@testing-library/dom"
 
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
@@ -32,7 +31,7 @@ describe("Given I am connected as an employee", () => {
 		})
 		// Test unitaire: icon-mail
 		test("Then bill icon in vertical layout should be highlighted", async () => {
-			await waitFor(() => screen.getByTestId("icon-mail"))
+			await screen.findByTestId("icon-mail")
 			const mailIcon = screen.getByTestId("icon-mail")
 			expect(mailIcon.classList.contains("active-icon"))
 		})
@@ -57,7 +56,7 @@ describe("Given I am connected as an employee", () => {
 				const handleChangeFile = jest.fn(newBill.handleChangeFile)
 				fileUp.addEventListener("change", (e) => handleChangeFile(e))
 				const file = new File(["test"], "test.png", { type: "image/png" })
-				userEvent.upload(fileUp, file)
+				fireEvent.change(fileUp, { target: { files: [file] } })
 
 				expect(handleChangeFile).toHaveBeenCalled()
 				expect(window.alert).not.toHaveBeenCalled()
@@ -81,7 +80,7 @@ describe("Given I am connected as an employee", () => {
 				const handleChangeFile = jest.fn(newBill.handleChangeFile)
 				fileUp.addEventListener("change", (e) => handleChangeFile(e))
 				const file = new File(["test"], "test.pdf", { type: "image/pdf" })
-				userEvent.upload(fileUp, file)
+				fireEvent.change(fileUp, { target: { files: [file] } })
 
 				expect(handleChangeFile).toHaveBeenCalled()
 				expect(window.alert).not.toHaveBeenCalled()
