@@ -23,6 +23,14 @@ export default class NewBill {
 			.files[0]
 		const filePath = e.target.value.split(/\\/g)
 		const fileName = filePath[filePath.length - 1]
+		// Fix bug: # [Bug Hunt] - Bills
+		const fileExtension = fileName.split(".").pop().toLowerCase()
+		const fileType = ["jpg", "png", "jpeg"]
+		if (!fileType.includes(fileExtension)) {
+			alert("Veuillez sélectionner un fichier au format JPG, JPEG ou PNG")
+			document.querySelector(`input[data-testid="file"]`).value = ""
+			return false
+		}
 		const formData = new FormData()
 		const email = JSON.parse(localStorage.getItem("user")).email
 		formData.append("file", file)
@@ -44,6 +52,7 @@ export default class NewBill {
 			})
 			.catch((error) => console.error(error))
 	}
+
 	handleSubmit = (e) => {
 		e.preventDefault()
 		console.log(
