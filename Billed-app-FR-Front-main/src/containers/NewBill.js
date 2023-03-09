@@ -26,10 +26,10 @@ export default class NewBill {
 		// Fix bug: # [Bug Hunt] - Bills
 		const fileExtension = fileName.split(".").pop().toLowerCase()
 		const fileType = ["jpg", "png", "jpeg"]
-		if (!fileType.includes(fileExtension)) {
+		if (fileType.includes(fileExtension)) {
 			alert("Veuillez sélectionner un fichier au format JPG, JPEG ou PNG")
 			document.querySelector(`input[data-testid="file"]`).value = ""
-			return false
+			return
 		}
 		const formData = new FormData()
 		const email = JSON.parse(localStorage.getItem("user")).email
