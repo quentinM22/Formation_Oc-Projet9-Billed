@@ -118,7 +118,7 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am a user connected as Employee", () => {
 	describe("When Je suis sur la page Bill", () => {
 		// test: Rucuperation Api simulé GET
-		test("fetches bills from mock API GET", async () => {
+		test("fetches bills from mock API GET", () => {
 			localStorage.setItem("user", JSON.stringify({ type: "Employee" }))
 
 			const root = document.createElement("div")
@@ -148,7 +148,7 @@ describe("Given I am a user connected as Employee", () => {
 				router()
 			})
 			// Test unitaire: Erreur 404
-			test("fetches bills from an API and fails with 404 message error", async () => {
+			test("fetches bills from an API and fails with 404 message error", () => {
 				mockStore.bills.mockImplementationOnce(() => {
 					return {
 						list: () => {
@@ -158,12 +158,12 @@ describe("Given I am a user connected as Employee", () => {
 				})
 				const errorWindow = BillsUI({ error: "Erreur 404" })
 				document.body.innerHTML = errorWindow
-				const message = await screen.getByText(/Erreur 404/)
+				const message = screen.getByText(/Erreur 404/)
 				expect(message).toBeTruthy()
 			})
 
 			// Test unitaire: Erreur 500
-			test("fetches messages from an API and fails with 500 message error", async () => {
+			test("fetches messages from an API and fails with 500 message error", () => {
 				mockStore.bills.mockImplementationOnce(() => {
 					return {
 						list: () => {
@@ -174,7 +174,7 @@ describe("Given I am a user connected as Employee", () => {
 
 				const errorWindow = BillsUI({ error: "Erreur 500" })
 				document.body.innerHTML = errorWindow
-				const message = await screen.getByText(/Erreur 500/)
+				const message = screen.getByText(/Erreur 500/)
 				expect(message).toBeTruthy()
 			})
 		})
