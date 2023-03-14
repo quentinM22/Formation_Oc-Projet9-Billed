@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-
-import { findByTestId, fireEvent, screen } from "@testing-library/dom"
+import "@testing-library/jest-dom"
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
 
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
@@ -12,6 +12,8 @@ import mockStore from "../__mocks__/store.js"
 
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js"
 import router from "../app/Router.js"
+
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
 	describe("When I am on NewBill Page", () => {
@@ -38,35 +40,32 @@ describe("Given I am connected as an employee", () => {
 		// Test Upload Fichier
 		describe("When j'upload un fichier", () => {
 			// Test unitaire: format fichier upload
-			test("Then la compatatibilité du fichier uploader (PNG)", () => {
+			test("Then la compatatibilité du fichier uploader", () => {
 				const onNavigate = (pathname) => {
 					document.body.innerHTML = ROUTES({ pathname })
 				}
-
 				const newBill = new NewBill({
 					document,
 					onNavigate,
 					localStorage: window.localStorage,
 					store: mockStore,
 				})
-
-				jest.spyOn(window, "alert").mockImplementation(() => {})
-
+				const errorMessage = screen.getByTestId("error-file")
 				const fileUp = screen.getByTestId("file")
-				const handleChangeFile = jest.fn(newBill.handleChangeFile)
-				fileUp.addEventListener("change", (e) => handleChangeFile(e))
+				const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
 				const file = new File(["test"], "test.png", { type: "image/png" })
+
+				fileUp.addEventListener("change", handleChangeFile)
 				fireEvent.change(fileUp, { target: { files: [file] } })
 
 				expect(handleChangeFile).toHaveBeenCalled()
-				expect(window.alert).not.toHaveBeenCalled()
 				expect(fileUp.files[0]).toStrictEqual(file)
+				expect(errorMessage).toHaveAttribute("hidden")
 			})
-			test("Then l'incompatatibilité du fichier uploader (PDF)", () => {
+			test("Then l'incompatatibilité du fichier uploader", () => {
 				const onNavigate = (pathname) => {
 					document.body.innerHTML = ROUTES({ pathname })
 				}
-
 				const newBill = new NewBill({
 					document,
 					onNavigate,
@@ -74,16 +73,16 @@ describe("Given I am connected as an employee", () => {
 					store: mockStore,
 				})
 
-				jest.spyOn(window, "alert").mockImplementation(() => {})
-
+				const errorMessage = screen.getByTestId("error-file")
 				const fileUp = screen.getByTestId("file")
 				const handleChangeFile = jest.fn(newBill.handleChangeFile)
-				fileUp.addEventListener("change", (e) => handleChangeFile(e))
 				const file = new File(["test"], "test.pdf", { type: "image/pdf" })
+
+				fileUp.addEventListener("change", (e) => handleChangeFile(e))
 				fireEvent.change(fileUp, { target: { files: [file] } })
 
 				expect(handleChangeFile).toHaveBeenCalled()
-				expect(window.alert).not.toHaveBeenCalled()
+				expect(errorMessage).not.toHaveAttribute("hidden")
 			})
 		})
 	})
@@ -92,7 +91,7 @@ describe("Given I am connected as an employee", () => {
 describe("Givent I am connected as an employee", () => {
 	describe("When Je valide le formulaire", () => {
 		// test: Envoi Api simulé Post
-		test("fetches bills to mock API POST", async () => {
+		test("fetches bills to mock API POST", () => {
 			document.body.innerHTML = NewBillUI()
 			const onNavigate = (pathname) => {
 				document.body.innerHTML = ROUTES({ pathname })

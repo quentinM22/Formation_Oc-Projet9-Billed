@@ -1,0 +1,66 @@
+1- Bug Login Admin - [Bug report] - Login
+
+Message Console: 
+
+Uncaught TypeError: can't access property "value", e.target.querySelector(...) is null
+    handleSubmitAdmin http://127.0.0.1:8080/src/containers/Login.js:44
+    Login http://127.0.0.1:8080/src/containers/Login.js:16
+    default http://127.0.0.1:8080/src/app/Router.js:75
+    <anonymous> http://127.0.0.1:8080/:47
+
+----
+container/Login.js
+
+Mauvaise selection des input sur le formulaire de connexion Admin
+
+// Fix bug: login Admin => " employee-email-input" > "admin-email-input"
+email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
+// Fix bug: login Admin => " employee-password-input" > "admin-password-input"
+password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value
+
+
+2- Bug Test Bills - [Bug report] - Bills
+
+View/BillsUI.js
+
+Tri des Bills non Effectuer dans le fichier View/BillsUI.js
+
+//Fix bug: test => Tri des Bills 
+return (data && data.length) ? data.sort((a,b) => {return ((a.date < b.date) ? 1 : -1 )}) .map(bill => row(bill)).join("") : ""
+
+
+3- Bug Bills Image -  [Bug Hunt] - Bills
+
+Views/NewBills.js
+
+Aucune indication sur les fichier accepter
+
+//Fix bug: gestion image ligne 58 ajout(accept="image/png", "image/jpeg", "image/jpg")
+
+Container/NewBill.js
+
+// Fix bug: # [Bug Hunt] - Bills
+		const fileExtension = fileName.split(".").pop().toLowerCase()
+		const fileType = ["jpg", "png", "jpeg"]
+		if (fileType.includes(fileExtension)) {
+			alert("Veuillez sélectionner un fichier au format JPG, JPEG ou PNG")
+			document.querySelector(`input[data-testid="file"]`).value = ""
+			return
+		}
+
+4- Bug Bills select event - [Bug Hunt] - Dashboard
+
+container/Dashboard.js
+
+Soucis de méthode pour détacher le Bill selectionner dans une section 
+Utilisation de la Doc Jquery pour debuger 
+lien documentation: https://api.jquery.com/off/#off
+
+// Fix bug: Evenement Select Bills => Jquery .off().on() gestion évenement
+// $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+$(`#open-bill${bill.id}`).off("click").on('click', (e) => this.handleEditTicket(e, bill, bills))
+
+Utilisation des méthode Jquery
+.on() -> Attacher Methode Evenement
+.off() -> Supprimer la Methode Attaché avec .on()
+
