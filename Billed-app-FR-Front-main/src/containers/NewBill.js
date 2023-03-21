@@ -17,20 +17,34 @@ export default class NewBill {
 		this.billId = null
 		new Logout({ document, localStorage, onNavigate })
 	}
-
+	// Fix bug: # [Bug Hunt] - Bills
+	// Bug Commenté
 	handleChangeFile = (e) => {
 		e.preventDefault()
-
+		// Récupération du fichier importé
 		const file = this.document.querySelector(`input[data-testid="file"]`)
 			.files[0]
+		// Récuperation du nom du fichier importé
 		const fileName = file ? file.name : ""
+		// Séparation du nom au niveau du "."
 		const splitFileName = fileName.split(".")
+		// Conservation de l'extension du Fichier importé
 		const fileExt = splitFileName[splitFileName.length - 1]
+		// Mise ne place de l'extension en minuscule pour la compatibilité du test
 		const fileExtLower = fileExt.toLowerCase()
-		// Fix bug: # [Bug Hunt] - Bills
+		// Création d'un tableau pour les extensions souhaité
 		const fileType = ["jpg", "png", "jpeg"]
+		// Vérification entre le tableau et l'extension du fichier importé
 		const fileAlowed = fileType.includes(fileExtLower)
+		// Récuperation de la ligne d'erreur dans le html
 		const errorFile = this.document.querySelector("#error-file")
+		/**
+		 * Si fileExtLower != fileType[]
+		 * Alors on affiche le message d'erreur
+		 * Et on rend le champs file vide 
+		 * Sinon le message d'erreur reste non visible
+		 * Et on continue la fonction 
+		 */
 		if (!fileAlowed) {
 			errorFile.hidden = false
 			this.document.querySelector(`input[data-testid="file"]`).value = ""

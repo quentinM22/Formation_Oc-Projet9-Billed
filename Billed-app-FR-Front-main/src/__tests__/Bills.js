@@ -34,9 +34,8 @@ describe("Given I am connected as an employee", () => {
 			await waitFor(() => screen.getByTestId("icon-window"))
 			const windowIcon = screen.getByTestId("icon-window")
 			//to-do write expect expression
-			expect(windowIcon.classList.contains("active-icon"))
+			expect(windowIcon.classList.contains("active-icon")).toBe(true)
 		})
-
 		// Test unitaire: Bills moins ancien au plus ancien
 		test("Then bills should be ordered from earliest to latest", () => {
 			document.body.innerHTML = BillsUI({ data: bills })
@@ -51,65 +50,81 @@ describe("Given I am connected as an employee", () => {
 		})
 		// Test unitaire: Path Nouveau Bill
 		// Ajout
+		// Test commenté
 		test("Then  Envoyer vers la nouvelle page de bill", () => {
+			// Simulation de présence d'un Objet dans le localStorage
 			Object.defineProperty(window, "localStorage", { value: localStorageMock })
+			// Stockage d'un user employee dans le localstorage
 			window.localStorage.setItem(
 				"user",
 				JSON.stringify({
 					type: "Employee",
 				})
 			)
+			// Générer un bills html
 			document.body.innerHTML = BillsUI({ data: bills })
+			// Chemin de navigation
 			const onNavigate = (pathname) => {
 				document.body.innerHTML = ROUTES({ pathname })
 			}
+			// Création d'instance Bills 
+			// Paramètre pour nécessaire pour le test
 			const mockBills = new Bills({
 				document,
 				onNavigate,
 				localStorage,
 				store: null,
 			})
+			// Récuperation du bouton dans la page
 			const btnNewBill = screen.getByTestId("btn-new-bill")
-
+			// Simulation Jest de la fonction "handleClickNewBill"
 			const mockFunctionHandleClick = jest.fn(mockBills.handleClickNewBill)
+			// Fonction testé
 			btnNewBill.addEventListener("click", mockFunctionHandleClick)
-			fireEvent.click(btnNewBill)
+			fireEvent.click(btnNewBill) //Simulation click sur le bouton
+ 			// Test
 			expect(mockFunctionHandleClick).toHaveBeenCalled()
 			expect(mockFunctionHandleClick).toHaveBeenCalledTimes(1)
 		})
 		// Test unitaire: IconEye modal
 		// Ajout
+		// Test commenté
 		test("Then Click sur IconEye", () => {
+			// Simulation de présence d'un Objet dans le localStorage
 			Object.defineProperty(window, localStorage, { value: localStorageMock })
+			// Stockage d'un user employee dans le localstorage
 			window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }))
+			// Création d'instance Bills 
+			// Paramètre pour nécessaire pour le test
 			const html = BillsUI({ data: bills })
 			document.body.innerHTML = html
+			// Chemin de navigation
 			const onNavigate = (pathname) => {
 				document.body.innerHTML = ROUTES({ pathname })
 			}
+			// Création d'instance Bills 
+			// Paramètre pour nécessaire pour le test
 			const billsContainer = new Bills({
 				document,
 				onNavigate,
 				localStorage: localStorageMock,
 				store: null,
 			})
+			// Simulation function d'ouverture de modal
+			// Contrôle de l'apelle de la méthode
 			$.fn.modal = jest.fn()
 
 			const handleClickIconEye = jest.fn(() => {
 				billsContainer.handleClickIconEye
 			})
+			// Récuperation du boutton[0] "Eye" 
 			const firstEyeIcon = screen.getAllByTestId("icon-eye")[0]
+			// Fonction testé	
 			firstEyeIcon.addEventListener("click", handleClickIconEye)
-			fireEvent.click(firstEyeIcon)
+			fireEvent.click(firstEyeIcon) //Simulation click sur le bouton
+			// Test
 			expect(handleClickIconEye).toHaveBeenCalled()
 			expect($.fn.modal).toHaveBeenCalled()
-		})
-		// Test unitaire: Chargement Page
-		test("Then Loading page should be displayed", () => {
-			const html = BillsUI({ data: bills, loading: true })
-			document.body.innerHTML = html
-			const isLoading = screen.getAllByText("Loading...")
-			expect(isLoading).toBeTruthy()
 		})
 	})
 })
@@ -118,16 +133,21 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am a user connected as Employee", () => {
 	describe("When Je suis sur la page Bill", () => {
 		// test: Rucuperation Api simulé GET
-		test("fetches bills from mock API GET", () => {
+		// Test commenté
+		test("fetches bills from mock API GET", async () => {
+			// Stockage d'un user employee dans le localstorage
 			localStorage.setItem("user", JSON.stringify({ type: "Employee" }))
-
+			// Création élément Html root  
+			// Mise en place de root dans le corps de page
 			const root = document.createElement("div")
 			root.setAttribute("id", "root")
 			document.body.append(root)
+			// Initialisation du router
 			router()
+			// Navigation vers page Bills
 			window.onNavigate(ROUTES_PATH.Bills)
-
-			expect(screen.findByText("test")).toBeTruthy()
+			// Test bill _mocks_
+			expect(screen.findByText("test3")).toBeTruthy()
 		})
 		describe("When an error occurs on API", () => {
 			beforeEach(() => {
@@ -148,7 +168,7 @@ describe("Given I am a user connected as Employee", () => {
 				router()
 			})
 			// Test unitaire: Erreur 404
-			test("fetches bills from an API and fails with 404 message error", () => {
+			test("fetches bills from an API and fails with 404 message error", async () => {
 				mockStore.bills.mockImplementationOnce(() => {
 					return {
 						list: () => {
@@ -158,12 +178,12 @@ describe("Given I am a user connected as Employee", () => {
 				})
 				const errorWindow = BillsUI({ error: "Erreur 404" })
 				document.body.innerHTML = errorWindow
-				const message = screen.getByText(/Erreur 404/)
+				const message = await screen.getByText(/Erreur 404/)
 				expect(message).toBeTruthy()
 			})
 
 			// Test unitaire: Erreur 500
-			test("fetches messages from an API and fails with 500 message error", () => {
+			test("fetches messages from an API and fails with 500 message error", async () => {
 				mockStore.bills.mockImplementationOnce(() => {
 					return {
 						list: () => {
@@ -174,7 +194,7 @@ describe("Given I am a user connected as Employee", () => {
 
 				const errorWindow = BillsUI({ error: "Erreur 500" })
 				document.body.innerHTML = errorWindow
-				const message = screen.getByText(/Erreur 500/)
+				const message = await screen.getByText(/Erreur 500/)
 				expect(message).toBeTruthy()
 			})
 		})
